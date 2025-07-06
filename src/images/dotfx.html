@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Random Pulsing Dots</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<canvas id="dotCanvas"></canvas>
+<script>
+  const canvas = document.getElementById('dotCanvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+  let dots = [];
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function createDot() {
+    return {
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 6 + 2,
+      color: ['red', 'blue', 'black'][Math.floor(Math.random() * 3)],
+      opacity: 1,
+      scale: 1,
+      life: 0,
+      maxLife: Math.random() * 100 + 80
+    };
+  }
+
+  function updateDots() {
+    for (let i = 0; i < dots.length; i++) {
+      const dot = dots[i];
+      dot.life++;
+      dot.opacity = 1 - dot.life / dot.maxLife;
+      dot.scale = 1 - dot.life / dot.maxLife;
+      if (dot.life >= dot.maxLife) {
+        dots[i] = createDot();
+      }
+    }
+  }
+
+  function drawDots() {
+    ctx.clearRect(0, 0, width, height);
+    for (const dot of dots) {
+      ctx.beginPath();
+      ctx.globalAlpha = dot.opacity;
+      ctx.fillStyle = dot.color;
+      ctx.arc(dot.x, dot.y, dot.r * dot.scale, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function animate() {
+    updateDots();
+    drawDots();
+    requestAnimationFrame(animate);
+  }
+
+  // Initialize dots
+  for (let i = 0; i < 40; i++) {
+    dots.push(createDot());
+  }
+
+  animate();
+</script>
+</body>
+</html>
