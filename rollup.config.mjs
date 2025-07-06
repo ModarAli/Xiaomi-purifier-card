@@ -68,7 +68,7 @@ const plugins = [
 ];
 
 export default {
-  input: 'src/purifier-card.ts',
+  input: 'src/xiaomi-purifier-card.ts',
   output: {
     dir: 'dist',
     format: 'es',
